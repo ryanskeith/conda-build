@@ -430,7 +430,7 @@ jobs:
         run: >
           pytest
           --cov=conda_build
-          -n auto
+          -n 1
           -m "${{ env.PYTEST_MARKER }}"
         env:
           CONDA_BUILD_SYSROOT: ${{ env.MACOSX_SDK_ROOT }}
