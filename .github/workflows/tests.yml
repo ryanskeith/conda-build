@@ -302,19 +302,19 @@ jobs:
         run: |
           echo "=== Visual Studio Installation Debug ==="
           echo "Checking for Visual Studio installations..."
-          if [ -d "C:\Program Files (x86)\Microsoft Visual Studio" ]; then
+          if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio") {
             echo "Found VS in Program Files (x86)"
-            ls "C:\Program Files (x86)\Microsoft Visual Studio"
-          fi
-          if [ -d "C:\Program Files\Microsoft Visual Studio" ]; then
+            Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio"
+          }
+          if (Test-Path "C:\Program Files\Microsoft Visual Studio") {
             echo "Found VS in Program Files"
-            ls "C:\Program Files\Microsoft Visual Studio"
-          fi
+            Get-ChildItem "C:\Program Files\Microsoft Visual Studio"
+          }
           echo "=== MSVC Compiler Versions ==="
-          where cl.exe 2>/dev/null || echo "cl.exe not found in PATH"
+          try { Get-Command cl.exe -ErrorAction Stop | Select-Object -ExpandProperty Source } catch { echo "cl.exe not found in PATH" }
           echo "=== Environment Variables ==="
-          echo "VCINSTALLDIR: $VCINSTALLDIR"
-          echo "VSINSTALLDIR: $VSINSTALLDIR"
+          echo "VCINSTALLDIR: $env:VCINSTALLDIR"
+          echo "VSINSTALLDIR: $env:VSINSTALLDIR"
 
       - name: Check MSVC Version
         run: |
