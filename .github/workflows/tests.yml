@@ -282,7 +282,7 @@ jobs:
           installation-dir: D:\conda
 
       - name: Choco Install
-        run: choco install visualstudio2022-workload-vctools
+        run: choco install visualstudio2017-workload-vctools
 
       - name: Conda Install
         run: >
@@ -297,13 +297,6 @@ jobs:
       # TODO: how can we remove this step?
       - name: Install Self
         run: pip install -e . --no-deps --no-build-isolation
-
-      - name: Setup Git Environment
-        run: |
-          git config --global user.name "Test User"
-          git config --global user.email "test@example.com"
-          echo "GIT_DESCRIBE_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo 'v0.0.0')" >> $GITHUB_ENV
-          echo "GIT_BUILD_STR=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Debug Visual Studio Installation
         run: |
@@ -361,7 +354,6 @@ jobs:
           -v  # Add verbose output for debugging
           -s  # Show print statements
           -m "${{ env.PYTEST_MARKER }}"
-          -k "not test_build_msvc_compiler"  # Skip problematic MSVC test temporarily
 
       - name: Upload Coverage
         uses: codecov/codecov-action@18283e04ce6e62d37312384ff67231eb8fd56d24 # v5.4.3
