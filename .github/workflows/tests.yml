@@ -67,7 +67,8 @@ jobs:
   linux:
     # only run test suite if there are code changes
     needs: changes
-    if: github.event_name == 'schedule' || needs.changes.outputs.code == 'true'
+    if: false  # Temporarily disabled for Windows debugging
+    # if: github.event_name == 'schedule' || needs.changes.outputs.code == 'true'
 
     runs-on: ubuntu-latest
     defaults:
@@ -171,7 +172,8 @@ jobs:
   linux-benchmarks:
     # only run test suite if there are code changes
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: false  # Temporarily disabled for Windows debugging
+    # if: needs.changes.outputs.code == 'true'
 
     runs-on: ubuntu-latest
     defaults:
@@ -240,21 +242,14 @@ jobs:
     needs: changes
     if: github.event_name == 'schedule' || needs.changes.outputs.code == 'true'
 
-    runs-on: windows-2019
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
-        # test lower version (w/ stable conda) and upper version (w/ canary conda)
+        # Simplified matrix for debugging - focus on one Python version
         python-version: ['3.9']
         conda-version: [release]
-        test-type: [serial, parallel]
-        include:
-          - python-version: '3.13'
-            conda-version: canary
-            test-type: serial
-          - python-version: '3.13'
-            conda-version: canary
-            test-type: parallel
+        test-type: [serial]  # Start with serial tests only for debugging
     env:
       ErrorActionPreference: Stop  # powershell exit on first error
       CONDA_CHANNEL_LABEL: ${{ matrix.conda-version == 'canary' && 'conda-canary/label/dev' || 'defaults' }}
@@ -303,6 +298,25 @@ jobs:
       - name: Install Self
         run: pip install -e . --no-deps --no-build-isolation
 
+      - name: Debug Visual Studio Installation
+        run: |
+          echo "=== Visual Studio Installation Debug ==="
+          echo "Checking for Visual Studio installations..."
+          if (Test-Path "C:\Program Files (x86)\Microsoft Visual Studio") {
+            echo "Found VS in Program Files (x86)"
+            Get-ChildItem "C:\Program Files (x86)\Microsoft Visual Studio"
+          }
+          if (Test-Path "C:\Program Files\Microsoft Visual Studio") {
+            echo "Found VS in Program Files"
+            Get-ChildItem "C:\Program Files\Microsoft Visual Studio"
+          }
+          echo "=== MSVC Compiler Versions ==="
+          try { Get-Command cl.exe -ErrorAction Stop | Select-Object -ExpandProperty Source } catch { echo "cl.exe not found in PATH" }
+          echo "=== Environment Variables ==="
+          echo "VCINSTALLDIR: $env:VCINSTALLDIR"
+          echo "VSINSTALLDIR: $env:VSINSTALLDIR"
+
+
       - name: Conda Info
         # view test env info (not base)
         run: python -m conda info --verbose
@@ -317,7 +331,8 @@ jobs:
           pytest
           --cov=conda_build
           --basetemp=${{ runner.temp }}
-          -n auto
+          -v  # Add verbose output for debugging
+          -s  # Show print statements
           -m "${{ env.PYTEST_MARKER }}"
 
       - name: Upload Coverage
@@ -339,7 +354,8 @@ jobs:
   macos:
     # only run test suite if there are code changes
     needs: changes
-    if: github.event_name == 'schedule' || needs.changes.outputs.code == 'true'
+    if: false  # Temporarily disabled for Windows debugging
+    # if: github.event_name == 'schedule' || needs.changes.outputs.code == 'true'
 
     # we still need intel macs so we are stuck on macos-13 (not -14 or -latest)
     # the issue is that there are recipes that depend on packages
@@ -502,14 +518,15 @@ jobs:
     # - prior steps succeeded,
     # - this is the main repo, and
     # - we are on the main, feature, or release branch
-    if: >-
-      !cancelled()
-      && !github.event.repository.fork
-      && (
-        github.ref_name == 'main'
-        || startsWith(github.ref_name, 'feature/')
-        || endsWith(github.ref_name, '.x')
-      )
+    if: false  # Temporarily disabled for Windows debugging
+    # if: >-
+    #   !cancelled()
+    #   && !github.event.repository.fork
+    #   && (
+    #     github.ref_name == 'main'
+    #     || startsWith(github.ref_name, 'feature/')
+    #     || endsWith(github.ref_name, '.x')
+    #   )
     strategy:
       matrix:
         include:
