@@ -140,6 +140,7 @@ def test_open_recipe(tmp_path: Path):
             pass
 
 
+@pytest.mark.integration
 @pytest.mark.benchmark
 def test_render_recipe(testing_config: Config) -> None:
     recipes = render_recipe(metadata_path / "_render_recipe", config=testing_config)

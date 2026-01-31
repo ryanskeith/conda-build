@@ -101,7 +101,7 @@ jobs:
     env:
       CONDA_CHANNEL_LABEL: ${{ matrix.conda-version == 'canary' && 'conda-canary/label/dev::' || '' }}
       CONDA_VERSION: ${{ contains('canary|release', matrix.conda-version) && 'conda' || format('conda={0}', matrix.conda-version) }}
-      PYTEST_MARKER: ${{ matrix.test-type == 'serial' && 'serial' || 'not serial' }}
+      PYTEST_MARKER: ${{ matrix.test-type == 'serial' && 'serial and not integration' || 'not serial and not integration' }}
       # Serial tests run without xdist (-n auto) to avoid race conditions
       PYTEST_XDIST: ${{ matrix.test-type == 'serial' && ' ' || '-n auto' }}
 
@@ -297,7 +297,7 @@ jobs:
     env:
       ErrorActionPreference: Stop  # powershell exit on first error
       CONDA_CHANNEL_LABEL: ${{ matrix.conda-version == 'canary' && 'conda-canary/label/dev' || 'defaults' }}
-      PYTEST_MARKER: ${{ matrix.test-type == 'serial' && 'serial' || 'not serial and not slow' }}
+      PYTEST_MARKER: ${{ matrix.test-type == 'serial' && 'serial and not integration' || 'not serial and not slow and not integration' }}
       # Serial tests run without xdist (-n auto) to avoid race conditions
       PYTEST_XDIST: ${{ matrix.test-type == 'serial' && ' ' || '-n auto' }}
 
@@ -407,7 +407,7 @@ jobs:
             test-type: parallel
     env:
       CONDA_CHANNEL_LABEL: ${{ matrix.conda-version == 'canary' && 'conda-canary/label/dev' || 'defaults' }}
-      PYTEST_MARKER: ${{ matrix.test-type == 'serial' && 'serial' || 'not serial' }}
+      PYTEST_MARKER: ${{ matrix.test-type == 'serial' && 'serial and not integration' || 'not serial and not integration' }}
       # Serial tests run without xdist (-n auto) to avoid race conditions
       PYTEST_XDIST: ${{ matrix.test-type == 'serial' && ' ' || '-n auto' }}
 
