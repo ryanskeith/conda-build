@@ -2078,6 +2078,7 @@ def test_rendered_is_reported(testing_config, capsys):
     assert "- base-outputs_overwrite_base_file >=1.0,<2.0a0" in captured.out
 
 
+@pytest.mark.integration
 @pytest.mark.skipif(on_win, reason="Tests cross-compilation targeting Windows")
 def test_cross_unix_windows_mingw(testing_config):
     recipe = os.path.join(metadata_dir, "_cross_unix_windows_mingw")
@@ -2153,6 +2154,7 @@ def test_build_strings_glob_match(testing_config: Config) -> None:
         api.build(metadata_path / "_blas_pins", config=testing_config)
 
 
+@pytest.mark.integration
 @pytest.mark.skipif(not on_linux, reason="needs __glibc virtual package")
 def test_api_build_grpc_issue5645(monkeypatch, tmp_path, testing_config):
     if Version(conda_version) < Version("25.1.0"):
@@ -2163,6 +2165,7 @@ def test_api_build_grpc_issue5645(monkeypatch, tmp_path, testing_config):
     api.build(str(metadata_path / "_grpc"), config=testing_config)
 
 
+@pytest.mark.integration
 @pytest.mark.skipif(
     not on_mac, reason="needs to cross-compile from osx-64 to osx-arm64"
 )

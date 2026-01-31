@@ -155,6 +155,7 @@ markers = [
   "no_default_testing_config: used internally to disable monkeypatching for testing_config",
   "benchmark: execute the benchmark tests",
   "memray: memory use tests",
+  "integration: expensive full-build integration tests (run nightly, not on PRs)",
 ]
 minversion = 3.0
 norecursedirs = ["tests/test-recipes/*"]
